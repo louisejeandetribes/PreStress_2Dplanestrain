@@ -1,20 +1,21 @@
-% check a pre-existing stress field or create a stress field
-clear all;close all;
-clear clc
+% INITIAL STRESS FIELD FOR IN PLANE, 2D SIMULATION OF A STRIKE-SLIP FAULT
+% by Louise Jeandet Ribes, Sept. 2022
+% after Jeandet Ribes et. al, 2022 (in prep)
 
-%% INPUTS - in plane stresses
+% This code checks if an initial stress field actually
+% corresponds to a strike-slip context in 3D, taking into account the out-of-plane stress tensor
 
-% test reverse
-% Sxx = -6.7263e+07;
-% Syy = -8.4336e+07;
-% Sxy = 2.3455e+07;
-% 
-% % test strike-slip
-Sxx = -6.0736e+07;
-Syy = -9.0863e+07;
-Sxy = 4.1387e+07;
+clc;clear;close all
 
-nu = 0.2749; % Poisson ratio
+%% INPUTS - change only this section
+
+% In-plane stresses
+Sxx = -6.7263e+07;
+Syy = -8.4336e+07;
+Sxy = 2.3455e+07;
+
+% Poisson ratio
+nu = 0.2749; 
 
 %% Compute principal stresses
 
@@ -34,7 +35,6 @@ f0_test = -Sxy/Syy;
 %% Plot stress field
 
 % PLOT CRITERION 
-
 gamma = [0:0.01:5];f0 = [0:0.001:1];
 gamma2 = repmat(gamma,numel(f0),1);f02 = repmat(f0',1,numel(gamma));
 Psi_2D = 0.5*atan2d(2.*f02,(gamma2-1));
@@ -44,7 +44,6 @@ f1 =  sqrt((gamma2-1).^2./(gamma2+1).^2 + 4*f02.^2./(gamma2+1).^2);
 Psi_2D(1-2*nu > f1) = NaN; % Condition for S3 > S2 (convention : positive in tension)
 Psi_2D(f1 > 1) = NaN; % Condition for compressive stresses
 
-% Plot Criterion
 figure(1);
 clf
 [C,h] = contourf(gamma,f0,Psi_2D,0:5:90,'-k');
